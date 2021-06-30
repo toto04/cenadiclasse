@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import cancelIcon from './cancel.svg'
 
 let format = Intl.DateTimeFormat('it', { day: '2-digit', month: '2-digit', year: 'numeric' }).format
+let nameInput: HTMLInputElement
 
 let App: FC = props => {
     let [targetDate, setTargetDate] = useState<number>()
@@ -21,7 +22,7 @@ let App: FC = props => {
         <h1>Cena di classe ex 5ASA 19/20</h1>
         <div className="input">
             <label htmlFor="name">nome e cognome</label>
-            <input type="text" id="name" />
+            <input ref={r => { if (r) nameInput = r }} type="text" id="name" />
         </div>
         <Calendar
             onChange={d => {
@@ -37,17 +38,17 @@ let App: FC = props => {
                     let x = 1
                     while (t < dates[selected - (x + 1)]) x++
                     dates[selected - x] = t
-                    setDates(dates)
-                    setSelected(selected - x)
+                    setDates([...dates])
+                    setSelected(dates.length)
                 } else if (t > dates[selected + 1]) {
                     let x = 1
                     while (t > dates[selected + (x + 1)]) x++
                     dates[selected + x] = t
-                    setDates(dates)
-                    setSelected(selected + x)
+                    setDates([...dates])
+                    setSelected(dates.length)
                 } else {
                     dates[selected] = t
-                    setDates(dates)
+                    setDates([...dates])
                     setSelected(dates.length)
                 }
 
@@ -108,7 +109,6 @@ let App: FC = props => {
                         onClick={() => {
                             dates.splice(i * 2, r[1] ? 2 : 1)
                             setDates([...dates])
-                            setSelected(dates.length)
                             setTargetDate(undefined)
                         }}
                     >
@@ -117,6 +117,20 @@ let App: FC = props => {
                 </div>
             })}
         </div>
+        <button onClick={async () => {
+            let ds = ranges.map(r => r.map(d => new Date(d).toISOString()))
+            ds.splice(ds.length - 1)
+            let res = await fetch('/dates', {
+                method: 'post',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({
+                    name: nameInput.value,
+                    dates: ds
+                })
+            })
+        }}>
+            conferma
+        </button>
     </div >
 }
 
