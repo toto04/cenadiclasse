@@ -1,6 +1,10 @@
 import fastify from 'fastify'
+import fastify_static from 'fastify-static'
 import env from 'dotenv'
 import { Pool } from 'pg'
+import path from 'path'
+import fs from 'fs'
+
 env.config()
 console.clear()
 let pool = new Pool(process.env.DATABASE_URL
@@ -12,6 +16,16 @@ let pool = new Pool(process.env.DATABASE_URL
         database: process.env.DB_NAME
     })
 let server = fastify()
+
+let readfile = (path: string) => new Promise((res, rej) => {
+    fs.readFile(path, (err, data) => {
+        if (err) {
+            rej(err)
+            return
+        }
+        res(data)
+    })
+})
 
 server.get('/getall', async (req, res) => {
     let db = await pool.connect()
@@ -30,6 +44,15 @@ server.post('/dates', async (req, res) => {
     })
     res.send()
     db.release()
+})
+
+server.register(fastify_static, {
+    root: path.join(__dirname, '../client/build')
+})
+
+server.get('/:any', async (req, res) => {
+    let file = await readfile(path.join(__dirname, '../client/build/index.html'))
+    res.type('text/html').send(file)
 })
 
 let start = async () => {

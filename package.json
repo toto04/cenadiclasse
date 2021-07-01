@@ -7,7 +7,8 @@
     "scripts": {
         "start": "ts-node src/index.ts",
         "dev": "nodemon --watch src -e ts --exec ts-node src/index.ts",
-        "react": "cd client && yarn start"
+        "react": "cd client && yarn start",
+        "build": "cd client && yarn && yarn build"
     },
     "private": true,
     "workspaces": [
