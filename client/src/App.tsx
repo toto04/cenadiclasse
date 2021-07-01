@@ -143,8 +143,8 @@ let App: FC = props => {
                 onClick={async () => {
                     setError('')
                     let nameInput = document.querySelector('input[type=text]') as HTMLInputElement
-                    let name = nameInput.value
-                    if (!nameArray.includes(name.toLowerCase())) {
+                    let name = nameInput.value.toLowerCase()
+                    if (!nameArray.includes(name)) {
                         setError('Seleziona il tuo nome completo dalla lista')
                         return
                     }

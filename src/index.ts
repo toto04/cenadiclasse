@@ -25,7 +25,7 @@ server.post('/dates', async (req, res) => {
     let db = await pool.connect()
     console.log(`nuova richiesta! da ${asd.name}, date: ${JSON.stringify(asd.dates)}`)
     await db.query({
-        text: 'INSERT INTO cenadiclasse VALUES ($1, $2)',
+        text: 'INSERT INTO cenadiclasse VALUES ($1, $2) ON CONFLICT ON CONSTRAINT cenadiclasse_pkey DO UPDATE SET dates=$2',
         values: [asd.name, JSON.stringify(asd.dates)]
     })
     res.send()
