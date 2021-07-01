@@ -56,7 +56,7 @@ server.get('/:any', async (req, res) => {
 })
 
 let start = async () => {
-    let p = await server.listen(process.env.PORT ?? 5000)
+    let p = await server.listen(process.env.PORT ?? 5000, '0.0.0.0')
     console.log('Server up and running on address ' + p)
 }
 
