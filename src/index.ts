@@ -8,9 +8,11 @@ import fs from 'fs'
 env.config()
 console.clear()
 let pool = new Pool(process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL, ssl: {
-        rejectUnauthorized: false
-    } }
+    ? {
+        connectionString: process.env.DATABASE_URL, ssl: {
+            rejectUnauthorized: false
+        }
+    }
     : {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -31,8 +33,9 @@ let readfile = (path: string) => new Promise((res, rej) => {
 
 server.get('/getall', async (req, res) => {
     let db = await pool.connect()
-    let q = await db.query<{ name: string, dates: string }>('SELECT name, dates FROM cenadiclasse')
-    let all = q.rows
+    let q = await db.query<{ dates: [string, string][] }>('SELECT dates FROM cenadiclasse')
+    let all = q.rows.map(r => r.dates)
+    res.send(all)
     db.release()
 })
 

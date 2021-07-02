@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import cancelIcon from './cancel.svg'
@@ -6,6 +6,8 @@ import Autocomplete from './Autocomplete'
 import { nameArray } from './names'
 
 let format = Intl.DateTimeFormat('it', { day: '2-digit', month: '2-digit', year: 'numeric' }).format
+
+let percs: Map<number, number> = new Map()
 
 let App: FC = props => {
     let [targetDate, setTargetDate] = useState<number>()
@@ -15,12 +17,40 @@ let App: FC = props => {
     let [error, setError] = useState('')
     let [success, setSuccess] = useState(false)
 
+    let [partecipations, setPartecipations] = useState<[number, number][][]>()
+    console.log(percs)
+
+    useEffect(() => {
+        fetch('/getall').then(async res => {
+            let partRows: [string, string][][] = await res.json()
+            let newparts: typeof partecipations = partRows.map(r => r.map(p => [
+                new Date(p[0]).getTime(),
+                new Date(p[1]).getTime()
+            ]))
+            setPartecipations(newparts)
+        })
+    }, [])
+
     let ranges: number[][] = []
     dates.forEach((d, i) => {
         if (i % 2 === 0) ranges.push([d])
         else ranges[Math.floor(i / 2)].push(d)
     })
     if (ranges[ranges.length - 1]?.length !== 1) ranges.push([])
+
+    let getPartecipationPercentage = (t: number) => {
+        if (!partecipations) return undefined
+        let perc = 0
+        partecipations?.forEach(row => {
+            for (let period of row)
+                if (t >= period[0] && t <= period[1]) {
+                    perc += 1 / partecipations!.length
+                    break
+                }
+        })
+        percs.set(t, perc)
+        return perc
+    }
 
     return success
         ? <div className="App">
@@ -38,8 +68,8 @@ let App: FC = props => {
             <div className="calendar_container">
                 <Calendar
                     minDetail="month"
-                    minDate={new Date('2021-07-01')}
-                    maxDate={new Date('2021-09-30')}
+                    minDate={new Date('2021-07-21T00:00:00')}
+                    maxDate={new Date('2021-09-30T00:00:00')}
                     onChange={d => {
                         let t = d.getTime()
 
@@ -72,16 +102,24 @@ let App: FC = props => {
                     value={dates[selected] ? new Date(dates[selected]) : undefined}
                     tileContent={({ date, view }) => {
                         if (view !== 'month') return null
+                        let t = date.getTime()
+                        let perc = percs.get(t) ?? getPartecipationPercentage(t) ?? 0
+
                         return <div
                             className="tile_container"
-                            onMouseEnter={() => {
-                                if (dates.length % 2) {
-                                    let t = date.getTime()
-                                    if (t > dates[dates.length - 1]) setTargetDate(t)
-                                }
+                            style={{
+                                backgroundColor: `hsl(190, 95%, ${100 - perc * 40}%)`
                             }}
+                        // onMouseEnter={() => {
+                        //     if (dates.length % 2 && t > dates[dates.length - 1]) {
+                        //         setTargetDate(t)
+                        //     }
+                        // }}
                         >
                             <div className="tile">
+                                <div className="tile_tooltip">
+                                    {Math.floor(perc * 100) + '%'}
+                                </div>
                                 {date.getDate()}
                             </div>
                         </div>
@@ -137,6 +175,7 @@ let App: FC = props => {
                     })}
                 </div>
             </div>
+            <div className="gradient"></div>
             <button
                 disabled={bdisabled}
                 className="submit_button"
@@ -169,6 +208,7 @@ let App: FC = props => {
                     if (res.status === 200) setSuccess(true)
                     else {
                         setError('risposta ' + res.status + '. di a tommaso che è un coglione')
+                        disableButton(false)
                     }
                 }}
             >

@@ -61,6 +61,7 @@ $dimension: 25px;
     border: none;
     border-radius: 12px;
     box-shadow: 0 0 8px 3px #0002;
+    overflow: hidden;
 }
 
 .react-calendar__navigation {
@@ -92,6 +93,7 @@ $dimension: 25px;
     padding: 0;
     background: none !important;
     z-index: 0;
+    overflow: visible !important;
 
     .tile_container {
         display: flex;
@@ -109,6 +111,24 @@ $dimension: 25px;
         height: $dimension;
         width: $dimension;
         border-radius: 50%;
+        z-index: 2;
+        .tile_tooltip {
+            font-size: 10px;
+            visibility: hidden;
+            position: absolute;
+            z-index: 3;
+            bottom: calc(100% + 4px);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            background-color: #0008;
+            color: white;
+            padding: 3px;
+            border-radius: 4px;
+        }
+        &:hover .tile_tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     }
 
     &.react-calendar__tile--active {
@@ -131,7 +151,7 @@ $dimension: 25px;
         width: 50%;
         transform: translate(0, -50%);
         background-color: rgba(153, 205, 50, 0.4);
-        z-index: -1;
+        z-index: 1;
     }
 
     &.range {
@@ -174,6 +194,10 @@ $dimension: 25px;
     abbr {
         display: none;
     }
+}
+
+.react-calendar__month-view__days__day--weekend:disabled {
+    color: #f99;
 }
 
 .range_display {
@@ -224,6 +248,29 @@ $dimension: 25px;
         &:last-child {
             border: none;
         }
+    }
+}
+
+.gradient {
+    position: relative;
+    height: 8px;
+    width: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, hsl(190, 95%, 100%), hsl(190, 95%, 60%));
+    margin-top: 24px;
+    box-shadow: 0 0 5px 2px #0002;
+    &::before {
+        position: absolute;
+        content: "0%";
+        font-size: 10px;
+        top: -12px;
+    }
+    &::after {
+        position: absolute;
+        content: "100%";
+        font-size: 10px;
+        top: -12px;
+        right: 0px;
     }
 }
 
