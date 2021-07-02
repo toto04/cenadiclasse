@@ -83,8 +83,8 @@ let App: FC = props => {
             <div className="calendar_container">
                 <Calendar
                     minDetail="month"
-                    minDate={new Date('2021-07-21T00:00:00')}
-                    maxDate={new Date('2021-09-30T00:00:00')}
+                    minDate={new Date('2021-07-05T00:00:00')}
+                    maxDate={new Date('2021-07-26T00:00:00')}
                     onChange={d => {
                         let t = d.getTime()
 
