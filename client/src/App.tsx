@@ -18,7 +18,7 @@ let App: FC = props => {
     let [success, setSuccess] = useState(false)
 
     let [partecipations, setPartecipations] = useState<[number, number][][]>()
-    console.log(percs)
+    let [people, setPeople] = useState<string[]>()
 
     useEffect(() => {
         fetch('/getall').then(async res => {
@@ -28,6 +28,10 @@ let App: FC = props => {
                 new Date(p[1]).getTime()
             ]))
             setPartecipations(newparts)
+        })
+        fetch('/people').then(async res => {
+            let ppl: string[] = await res.json()
+            setPeople(ppl)
         })
     }, [])
 
@@ -53,12 +57,18 @@ let App: FC = props => {
     }
 
     return success
-        ? <div className="App">
-            <h1>{'Grazie ' + (document.querySelector('input[type=text]') as HTMLInputElement).value.split(' ')[0] + ', la tua partecipazione è stata registrata'}</h1>
+        ? <div className="success">
+            <h1>{'Grazie ' + (document.querySelector('input[type=text]') as HTMLInputElement).value.split(' ')[0] + ', la tua preferenza è stata registrata'}</h1>
             <h2>Puoi aggiornarla in qualsiasi momento tornando a questa pagina</h2>
         </div>
         : <div className="App">
-            <h1>Cena di classe ex 5ASA 19/20</h1>
+            <h1 className="title">Cena di classe ex 5ASA 19/20</h1>
+            <div className="people">
+                {people?.length ?? 0} persone hanno già espresso la loro preferenza
+                <div className="people_tooltip">
+                    {people?.map(p => <p key={"toolttt" + p}>{p}</p>)}
+                </div>
+            </div>
             {error ? <p className="error">{error}</p> : undefined}
             <div className="input">
                 <label htmlFor="name">nome</label>

@@ -39,6 +39,14 @@ server.get('/getall', async (req, res) => {
     db.release()
 })
 
+server.get('/people', async (req, res) => {
+    let db = await pool.connect()
+    let q = await db.query<{ name: string }>('SELECT name FROM cenadiclasse ORDER BY name')
+    let ppl = q.rows.map(r => r.name)
+    res.send(ppl)
+    db.release()
+})
+
 server.post('/dates', async (req, res) => {
     let asd: { name: string, dates: string[][] } = req.body as any
     let db = await pool.connect()

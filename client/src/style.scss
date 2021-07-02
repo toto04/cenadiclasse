@@ -13,12 +13,40 @@ body {
     background-color: #fff;
 }
 
+.success,
 .App {
     max-width: 700px;
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.title {
+    margin-bottom: 0.5em;
+}
+
+.people {
+    position: relative;
+    .people_tooltip {
+        position: absolute;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        background-color: #000a;
+        padding: 6px;
+        font-size: 14px;
+        border-radius: 6px;
+        color: white;
+        z-index: 5;
+        p {
+            margin: 0;
+        }
+    }
+    &:hover .people_tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
 }
 
 .input {
@@ -29,10 +57,10 @@ body {
     background-color: yellowgreen;
     width: 100%;
     border-radius: 12px;
-    padding: 4px;
+    padding: 3px;
     padding-left: 12px;
     box-shadow: 0 0 5px 2px #0002;
-    margin-bottom: 12px;
+    margin: 12px 0;
 
     label {
         padding-left: 2px;
@@ -361,4 +389,9 @@ p.error {
 
 .no-suggestions {
     display: none;
+}
+
+.success {
+    text-align: center;
+    justify-content: center;
 }
