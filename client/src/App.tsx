@@ -9,6 +9,11 @@ let format = Intl.DateTimeFormat('it', { day: '2-digit', month: '2-digit', year:
 
 let percs: Map<number, number> = new Map()
 
+let caps = (str: string) => {
+    let ss = str.split(' ')
+    return ss.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+}
+
 let App: FC = props => {
     let [targetDate, setTargetDate] = useState<number>()
     let [dates, setDates] = useState<number[]>([])
@@ -31,7 +36,7 @@ let App: FC = props => {
         })
         fetch('/people').then(async res => {
             let ppl: string[] = await res.json()
-            setPeople(ppl)
+            setPeople(ppl.map(n => caps(n)))
         })
     }, [])
 
@@ -58,7 +63,7 @@ let App: FC = props => {
 
     return success
         ? <div className="success">
-            <h1>{'Grazie ' + (document.querySelector('input[type=text]') as HTMLInputElement).value.split(' ')[0] + ', la tua preferenza è stata registrata'}</h1>
+            <h1>{'Grazie ' + caps((document.querySelector('input[type=text]') as HTMLInputElement).value.split(' ')[0]) + ', la tua preferenza è stata registrata'}</h1>
             <h2>Puoi aggiornarla in qualsiasi momento tornando a questa pagina</h2>
         </div>
         : <div className="App">
@@ -72,7 +77,7 @@ let App: FC = props => {
             {error ? <p className="error">{error}</p> : undefined}
             <div className="input">
                 <label htmlFor="name">nome</label>
-                <Autocomplete suggestions={nameArray} />
+                <Autocomplete suggestions={nameArray.map(n => caps(n))} />
             </div>
             <h3>Seleziona le date in cui saresti disponibile</h3>
             <div className="calendar_container">

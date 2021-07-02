@@ -1,7 +1,6 @@
 $maincolor: rgb(255, 255, 255);
 
 body {
-    margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
         "Droid Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -11,6 +10,7 @@ body {
     display: flex;
     justify-content: center;
     background-color: #fff;
+    margin: 0 12px;
 }
 
 .success,
