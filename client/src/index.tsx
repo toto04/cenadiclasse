@@ -1,11 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import App from './App'
+import Secret from './Secret'
 import './style.scss'
 
 ReactDOM.render(
     <React.StrictMode>
-        <App />
+        <BrowserRouter>
+            <Switch>
+                <Route path="/secret">
+                    <Secret />
+                </Route>
+                <Route>
+                    <App />
+                </Route>
+            </Switch>
+        </BrowserRouter>
         <footer>
             <p>questa web app è stata sviluppata in molto poco tempo da Tommaso Morganti</p>
             <p>se si rompe qualcosa abbiate pazienza, sono in sessione e non ho tempo :(</p>

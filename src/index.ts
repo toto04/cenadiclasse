@@ -31,6 +31,17 @@ let readfile = (path: string) => new Promise((res, rej) => {
     })
 })
 
+server.get('/supersecret', async (req, res) => {
+    let db = await pool.connect()
+    let q = await db.query<{ name: string, dates: [string, string][] }>('SELECT name, dates FROM cenadiclasse')
+    let all: { [name: string]: [string, string][] } = {}
+    q.rows.forEach(r => {
+        all[r.name] = r.dates
+    })
+    res.send(all)
+    db.release()
+})
+
 server.get('/getall', async (req, res) => {
     let db = await pool.connect()
     let q = await db.query<{ dates: [string, string][] }>('SELECT dates FROM cenadiclasse')

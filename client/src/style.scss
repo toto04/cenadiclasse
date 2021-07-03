@@ -140,6 +140,7 @@ $dimension: 25px;
         width: $dimension;
         border-radius: 50%;
         z-index: 2;
+        overflow: visible;
         .tile_tooltip {
             font-size: 10px;
             visibility: hidden;
@@ -153,7 +154,30 @@ $dimension: 25px;
             padding: 3px;
             border-radius: 4px;
         }
+        .people_tooltip {
+            position: absolute;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            background-color: #000b;
+            bottom: 40px;
+            padding: 6px;
+            font-size: 13px;
+            width: 120px;
+            border-radius: 6px;
+            color: white;
+            z-index: 8;
+            text-align: start;
+            p {
+                word-break: keep-all;
+                margin: 0;
+            }
+        }
         &:hover .tile_tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        &:hover .people_tooltip {
             visibility: visible;
             opacity: 1;
         }
@@ -395,4 +419,13 @@ p.error {
 .success {
     text-align: center;
     justify-content: center;
+}
+
+select {
+    border: 3px solid yellowgreen;
+    border-radius: 12px;
+    width: 100%;
+    padding: 4px;
+    font-size: 1em;
+    margin-bottom: 16px;
 }
